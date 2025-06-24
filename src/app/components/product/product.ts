@@ -4,11 +4,12 @@ import { Fakestore } from '../../services/fakestore.service';
 import { CommonModule } from '@angular/common';
 import { Product as ProductInterface, ProductCategory } from '../../model';
 import { CardProduct } from '../card-product/card-product';
+import { Carousel, CarouselSlide } from '../carousel/carousel';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product',
-  imports: [CommonModule, CardProduct],
+  imports: [CommonModule, CardProduct, Carousel],
   templateUrl: './product.html',
   styleUrl: './product.css'
 })
@@ -21,6 +22,49 @@ export class Product implements OnInit, OnDestroy {
   currentCategory: ProductCategory | null = null;
   currentCategorySlug: string | null = null;
   pageTitle: string = 'Todos los Productos';
+  
+  // Carousel slides for home page
+  carouselSlides: CarouselSlide[] = [
+    {
+      image: 'https://images.unsplash.com/photo-1580554430120-94cfcb3adf25?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      title: 'Bienvenido a FakeStore',
+      subtitle: 'Descubre los mejores productos al mejor precio',
+      buttonText: 'Explorar Productos',
+      alt: 'Banner Principal',
+      buttonAction: () => this.router.navigate(['/products'])
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      title: 'Ofertas Especiales',
+      subtitle: 'Hasta 50% de descuento en productos seleccionados',
+      buttonText: 'Ver Ofertas',
+      alt: 'Ofertas Especiales'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1745395436364-ed85bc5ea4aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      title: 'Ropa de Hombre',
+      subtitle: 'Estilo y elegancia para cada ocasión',
+      buttonText: 'Ver Colección',
+      alt: 'Ropa de Hombre',
+      buttonAction: () => this.router.navigate(['/category/mens-clothing'])
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      title: 'Ropa de Mujer',
+      subtitle: 'Moda femenina de última tendencia',
+      buttonText: 'Ver Colección',
+      alt: 'Ropa de Mujer',
+      buttonAction: () => this.router.navigate(['/category/womens-clothing'])
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      title: 'Electrónicos',
+      subtitle: 'Tecnología de vanguardia',
+      buttonText: 'Ver Productos',
+      alt: 'Electrónicos',
+      buttonAction: () => this.router.navigate(['/category/electronics'])
+    }
+  ];
 
   private destroy$ = new Subject<void>();
 
@@ -134,4 +178,8 @@ export class Product implements OnInit, OnDestroy {
     this.viewMode = this.viewMode === 'table' ? 'cards' : 'table';
   }
 
+  // Check if we're on the home page (no category selected)
+  get isHomePage(): boolean {
+    return !this.currentCategorySlug;
+  }
 }
