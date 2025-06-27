@@ -31,6 +31,8 @@ export class CardProduct {
         product: this.product, 
         quantity: 1 
       });
+      // Mostrar mensaje de confirmación
+      alert(`¡${this.product.title} agregado al carrito!`);
       // También emitir el evento para el componente padre si es necesario
       this.addToCart.emit(this.product);
     } else {
