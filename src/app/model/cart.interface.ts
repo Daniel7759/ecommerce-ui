@@ -10,6 +10,37 @@ export interface CartItem {
 }
 
 /**
+ * Interface para el estado completo del carrito
+ */
+export interface CartState {
+  items: CartItem[];
+  totalItems: number;
+  totalPrice: number;
+  isLoading: boolean;
+}
+
+/**
+ * Interface para acciones del carrito
+ */
+export interface AddToCartRequest {
+  product: Product;
+  quantity?: number;
+}
+
+/**
+ * Interface para respuesta de la API del carrito
+ */
+export interface CartResponse {
+  id: number;
+  userId: number;
+  date: string;
+  products: Array<{
+    productId: number;
+    quantity: number;
+  }>;
+}
+
+/**
  * Interface para representar el carrito de compras completo
  */
 export interface Cart {
