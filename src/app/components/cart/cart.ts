@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { Cart, CartItem } from '../../model/cart.interface';
@@ -16,7 +17,7 @@ export class CartComponent implements OnInit, OnDestroy {
   currentCart: Cart | null = null;
   private subscription = new Subscription();
 
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService, private router: Router) {
     this.cart$ = this.cartService.cart$;
   }
 
@@ -87,8 +88,8 @@ export class CartComponent implements OnInit, OnDestroy {
   proceedToCheckout(): void {
     if (this.isEmpty) return;
     
-    // Aquí podrías navegar a la página de checkout
+    // Navegar a la página de checkout
     console.log('Proceeding to checkout with cart:', this.currentCart);
-    // this.router.navigate(['/checkout']);
+    this.router.navigate(['/checkout']);
   }
 }
