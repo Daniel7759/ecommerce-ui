@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Product } from '../../model';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-card-product',
@@ -17,13 +18,20 @@ export class CardProduct {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {}
 
   onAddToCart(): void {
     // Verificar si el usuario está autenticado
     if (this.authService.isAuthenticated()) {
       console.log('🛒 Agregando al carrito:', this.product.title);
+      // Agregar producto al carrito usando el servicio
+      this.cartService.addToCart({ 
+        product: this.product, 
+        quantity: 1 
+      });
+      // También emitir el evento para el componente padre si es necesario
       this.addToCart.emit(this.product);
     } else {
       console.log('🔐 Usuario no autenticado, redirigiendo al login...');

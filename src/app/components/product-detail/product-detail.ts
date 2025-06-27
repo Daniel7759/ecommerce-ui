@@ -4,6 +4,7 @@ import { Product } from '../../model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Fakestore } from '../../services/fakestore.service';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -24,7 +25,8 @@ export class ProductDetail implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private fakeStore: Fakestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private cartService: CartService
   ) { }
 
   ngOnInit(): void {
@@ -84,11 +86,14 @@ export class ProductDetail implements OnInit, OnDestroy {
    * Agregar producto al carrito
    */
   addToCart(): void {
-    if (this.authService.isAuthenticated()) {
-      console.log('🛒 Agregando al carrito:', this.product?.title);
-      // Aquí implementarías la lógica del carrito
-      // Por ahora solo mostramos un mensaje
-      alert('Producto agregado al carrito! (funcionalidad en desarrollo)');
+    if (this.authService.isAuthenticated() && this.product) {
+      console.log('🛒 Agregando al carrito:', this.product.title);
+      this.cartService.addToCart({ 
+        product: this.product, 
+        quantity: 1 
+      });
+      // Mostrar mensaje de confirmación
+      alert(`¡${this.product.title} agregado al carrito!`);
     } else {
       console.log('🔐 Usuario no autenticado, mostrando modal...');
       this.showLoginModal = true;
@@ -99,14 +104,15 @@ export class ProductDetail implements OnInit, OnDestroy {
    * Comprar ahora
    */
   buyNow(): void {
-    if (this.authService.isAuthenticated()) {
-      console.log('💳 Comprando ahora:', this.product?.title);
-      // Aquí implementarías la lógica de checkout
-      // Por ahora solo mostramos un mensaje
-      alert('Redirigiendo a checkout! (funcionalidad en desarrollo)');
-      // this.router.navigate(['/checkout'], { 
-      //   queryParams: { productId: this.product?.id } 
-      // });
+    if (this.authService.isAuthenticated() && this.product) {
+      console.log('💳 Comprando ahora:', this.product.title);
+      // Agregar al carrito y redirigir al checkout
+      this.cartService.addToCart({ 
+        product: this.product, 
+        quantity: 1 
+      });
+      // Redirigir al checkout
+      this.router.navigate(['/checkout']);
     } else {
       console.log('🔐 Usuario no autenticado, mostrando modal...');
       this.showLoginModal = true;
