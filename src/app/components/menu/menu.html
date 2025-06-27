@@ -73,13 +73,93 @@
             
             <!-- Actions Container -->
             <div class="user-actions">
-              <!-- Cart Button -->
-              <button class="cart-button relative flex items-center justify-center w-10 h-10 text-gray-600 hover:text-blue-600 transition-all duration-200 rounded-lg hover:bg-gray-100 md:hover:bg-transparent">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
-                </svg>
-                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
-              </button>
+              <!-- Cart Button with Dropdown -->
+              <div class="cart-container relative"
+                   (mouseenter)="showCartDropdown()"
+                   (mouseleave)="hideCartDropdown()">
+                <button class="cart-button relative flex items-center justify-center w-10 h-10 text-gray-600 hover:text-blue-600 transition-all duration-200 rounded-lg hover:bg-gray-100 md:hover:bg-transparent">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
+                  </svg>
+                  <!-- Cart Counter -->
+                  <span *ngIf="getCartItemCount() > 0" 
+                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {{ getCartItemCount() }}
+                  </span>
+                </button>
+                
+                <!-- Cart Dropdown -->
+                <div *ngIf="isCartDropdownOpen" 
+                     class="cart-dropdown absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 dark:bg-gray-800 dark:border-gray-700">
+                  
+                  <!-- Dropdown Header -->
+                  <div class="cart-dropdown-header px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                      Carrito ({{ getCartItemCount() }})
+                    </h3>
+                  </div>
+                  
+                  <!-- Empty Cart State -->
+                  <div *ngIf="isCartEmpty()" class="cart-empty px-4 py-6 text-center">
+                    <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
+                    </svg>
+                    <p class="text-gray-500 dark:text-gray-400">Tu carrito está vacío</p>
+                  </div>
+                  
+                  <!-- Cart Items -->
+                  <div *ngIf="!isCartEmpty()" class="cart-items max-h-80 overflow-y-auto">
+                    <div *ngFor="let item of getCartItems()" 
+                         class="cart-item flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      
+                      <!-- Product Image -->
+                      <div class="item-image w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 mr-3">
+                        <img [src]="item.product.image" 
+                             [alt]="item.product.title"
+                             class="w-full h-full object-contain">
+                      </div>
+                      
+                      <!-- Product Info -->
+                      <div class="item-info flex-1 min-w-0">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate" 
+                            [title]="item.product.title">
+                          {{ item.product.title }}
+                        </h4>
+                        <div class="flex items-center justify-between mt-1">
+                          <span class="text-sm text-gray-500 dark:text-gray-400">
+                            Cantidad: {{ item.quantity }}
+                          </span>
+                          <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                            {{ formatPrice(item.subtotal) }}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <!-- Remove Button -->
+                      <button (click)="removeFromCart(item.product.id, $event)"
+                              class="remove-btn ml-2 p-1 text-gray-400 hover:text-red-500 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Cart Footer -->
+                  <div *ngIf="!isCartEmpty()" class="cart-dropdown-footer px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-sm font-medium text-gray-900 dark:text-white">Total:</span>
+                      <span class="text-lg font-bold text-blue-600 dark:text-blue-400">
+                        {{ formatPrice(getCartTotal()) }}
+                      </span>
+                    </div>
+                    <button (click)="navigateToCart()"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+                      Ver Carrito Completo
+                    </button>
+                  </div>
+                </div>
+              </div>
               
               <!-- Logout Button -->
               <button (click)="onAuthClick()" 

@@ -4,7 +4,9 @@ import { ProductCategory, User, AuthState } from '../../model';
 import { CommonModule } from '@angular/common';
 import { Fakestore } from '../../services/fakestore.service';
 import { AuthService } from '../../services/auth.service';
-import { Subject, takeUntil } from 'rxjs';
+import { CartService } from '../../services/cart.service';
+import { Cart, CartItem } from '../../model/cart.interface';
+import { Subject, takeUntil, combineLatest } from 'rxjs';
 
 interface MenuCategory {
   label: string;
@@ -22,25 +24,33 @@ export class Menu implements OnInit, OnDestroy {
 
   menuCategories: MenuCategory[] = [];
   authState: AuthState = { isAuthenticated: false, user: null, token: null };
+  cart: Cart | null = null;
+  isCartDropdownOpen = false;
   private destroy$ = new Subject<void>();
   
   constructor(
     private router: Router,
     private fakestoreService: Fakestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private cartService: CartService
   ) {
     console.log('Menu constructor - Router disponible:', !!this.router);
     console.log('Menu constructor - FakeStore disponible:', !!this.fakestoreService);
   }
 
   ngOnInit(): void {
-    // Suscribirse al estado de autenticación
-    this.authService.authState$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(authState => {
-        this.authState = authState;
-        console.log('🔐 Estado de auth actualizado en menu:', authState.isAuthenticated);
-      });
+    // Combinar observables de autenticación y carrito
+    combineLatest([
+      this.authService.authState$,
+      this.cartService.cart$
+    ])
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(([authState, cart]) => {
+      this.authState = authState;
+      this.cart = cart;
+      console.log('🔐 Estado de auth actualizado en menu:', authState.isAuthenticated);
+      console.log('🛒 Carrito actualizado en menu:', cart.itemCount, 'items');
+    });
 
     // Cargar categorías
     this.initializeCategories();
@@ -127,6 +137,74 @@ export class Menu implements OnInit, OnDestroy {
       return `${this.authState.user.name.firstname} ${this.authState.user.name.lastname}`;
     }
     return '';
+  }
+
+  /**
+   * Obtener número de items en el carrito
+   */
+  getCartItemCount(): number {
+    return this.cart ? this.cart.itemCount : 0;
+  }
+
+  /**
+   * Verificar si el carrito está vacío
+   */
+  isCartEmpty(): boolean {
+    return !this.cart || this.cart.items.length === 0;
+  }
+
+  /**
+   * Obtener items del carrito para el dropdown
+   */
+  getCartItems(): CartItem[] {
+    return this.cart ? this.cart.items : [];
+  }
+
+  /**
+   * Mostrar dropdown del carrito
+   */
+  showCartDropdown(): void {
+    this.isCartDropdownOpen = true;
+  }
+
+  /**
+   * Ocultar dropdown del carrito
+   */
+  hideCartDropdown(): void {
+    this.isCartDropdownOpen = false;
+  }
+
+  /**
+   * Navegar al carrito completo
+   */
+  navigateToCart(): void {
+    this.isCartDropdownOpen = false;
+    this.router.navigate(['/cart']);
+  }
+
+  /**
+   * Remover item del carrito desde el dropdown
+   */
+  removeFromCart(productId: number, event: Event): void {
+    event.stopPropagation();
+    this.cartService.removeFromCart(productId);
+  }
+
+  /**
+   * Formatear precio
+   */
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(price);
+  }
+
+  /**
+   * Obtener total del carrito
+   */
+  getCartTotal(): number {
+    return this.cart ? this.cart.total : 0;
   }
 
 }

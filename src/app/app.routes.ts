@@ -3,6 +3,7 @@ import { CardProduct } from './components/card-product/card-product';
 import { Product } from './components/product/product';
 import { ProductDetail } from './components/product-detail/product-detail';
 import { Login } from './components/login/login';
+import { CartComponent } from './components/cart/cart';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -16,6 +17,7 @@ export const routes: Routes = [
     { path: 'product', component: CardProduct },
     { path: 'product/:id', component: ProductDetail },
     { path: 'login', component: Login },
+    { path: 'cart', component: CartComponent },
     // Rutas protegidas que requieren autenticación
     { 
         path: 'checkout', 
