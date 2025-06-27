@@ -1,0 +1,120 @@
+<!-- Cart Container -->
+<div class="cart-container">
+  <!-- Cart Header -->
+  <div class="cart-header">
+    <h2 class="cart-title">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
+      </svg>
+      Carrito de Compras
+    </h2>
+    <button 
+      *ngIf="!isEmpty" 
+      (click)="clearCart()" 
+      class="clear-cart-btn"
+      title="Vaciar carrito">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+      </svg>
+      Vaciar
+    </button>
+  </div>
+
+  <!-- Cart Content -->
+  <div class="cart-content" *ngIf="currentCart">
+    <!-- Empty Cart State -->
+    <div *ngIf="isEmpty" class="empty-cart">
+      <div class="empty-cart-icon">
+        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
+        </svg>
+      </div>
+      <h3>Tu carrito está vacío</h3>
+      <p>Agrega algunos productos para comenzar tu compra</p>
+    </div>
+
+    <!-- Cart Items -->
+    <div *ngIf="!isEmpty" class="cart-items">
+      <div 
+        *ngFor="let item of currentCart.items" 
+        class="cart-item">
+        
+        <!-- Product Image -->
+        <div class="item-image">
+          <img 
+            [src]="item.product.image" 
+            [alt]="item.product.title"
+            class="product-image">
+        </div>
+
+        <!-- Product Info -->
+        <div class="item-info">
+          <h4 class="product-title">{{ item.product.title }}</h4>
+          <p class="product-category">{{ item.product.category }}</p>
+          <div class="product-price">{{ formatPrice(item.product.price) }}</div>
+        </div>
+
+        <!-- Quantity Controls -->
+        <div class="quantity-controls">
+          <button 
+            (click)="decrementQuantity(item)"
+            class="quantity-btn"
+            [disabled]="item.quantity <= 1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+            </svg>
+          </button>
+          <span class="quantity">{{ item.quantity }}</span>
+          <button 
+            (click)="incrementQuantity(item)"
+            class="quantity-btn">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Item Subtotal -->
+        <div class="item-subtotal">
+          <div class="subtotal-price">{{ formatPrice(item.subtotal) }}</div>
+          <button 
+            (click)="removeItem(item)"
+            class="remove-btn"
+            title="Eliminar producto">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div *ngIf="!isEmpty" class="cart-summary">
+      <div class="summary-row">
+        <span class="summary-label">Productos ({{ currentCart.itemCount }})</span>
+        <span class="summary-value">{{ formatPrice(currentCart.total) }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Envío</span>
+        <span class="summary-value">Gratis</span>
+      </div>
+      <div class="summary-row total-row">
+        <span class="summary-label">Total</span>
+        <span class="summary-value total-price">{{ formatPrice(currentCart.total) }}</span>
+      </div>
+    </div>
+
+    <!-- Checkout Button -->
+    <div *ngIf="!isEmpty" class="cart-actions">
+      <button 
+        (click)="proceedToCheckout()"
+        class="checkout-btn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+        </svg>
+        Proceder al Pago
+      </button>
+    </div>
+  </div>
+</div>
