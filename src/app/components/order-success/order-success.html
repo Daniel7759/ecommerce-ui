@@ -1,0 +1,125 @@
+<div class="success-container">
+  <div class="success-content">
+    <!-- Success Icon -->
+    <div class="success-icon">
+      <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    </div>
+
+    <!-- Success Message -->
+    <h1>¡Pedido realizado con éxito!</h1>
+    <p class="success-message">
+      Tu pedido ha sido procesado correctamente y recibirás un email de confirmación en breve.
+    </p>
+
+    <!-- Order Details -->
+    <div class="order-details" *ngIf="orderData">
+      <h2>Detalles del pedido</h2>
+      
+      <!-- Order Number -->
+      <div class="detail-section">
+        <div class="detail-row">
+          <span class="detail-label">Número de pedido:</span>
+          <span class="detail-value order-number">{{ orderNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value">{{ orderDate | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <!-- Products Ordered -->
+      <div class="detail-section">
+        <h3>Productos pedidos</h3>
+        <div *ngFor="let item of orderData.cart.items" class="product-item">
+          <div class="product-info">
+            <img [src]="item.product.image" [alt]="item.product.title" class="product-image">
+            <div class="product-details">
+              <h4>{{ item.product.title }}</h4>
+              <p>Cantidad: {{ item.quantity }}</p>
+            </div>
+          </div>
+          <div class="product-price">{{ formatPrice(item.subtotal) }}</div>
+        </div>
+      </div>
+
+      <!-- Shipping Address -->
+      <div class="detail-section">
+        <h3>Dirección de envío</h3>
+        <div class="address-info">
+          <p>{{ orderData.shippingAddress.fullName }}</p>
+          <p>{{ orderData.shippingAddress.address }}</p>
+          <p>{{ orderData.shippingAddress.city }}, {{ orderData.shippingAddress.postalCode }}</p>
+          <p>{{ orderData.shippingAddress.country }}</p>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="detail-section">
+        <h3>Método de pago</h3>
+        <p>{{ orderData.paymentMethod.name }}</p>
+      </div>
+
+      <!-- Order Total -->
+      <div class="detail-section total-section">
+        <div class="total-row">
+          <span>Subtotal:</span>
+          <span>{{ formatPrice(orderData.cart.total) }}</span>
+        </div>
+        <div class="total-row">
+          <span>Envío:</span>
+          <span>{{ orderData.cart.total > 50 ? 'Gratis' : formatPrice(5.99) }}</span>
+        </div>
+        <div class="total-row final-total">
+          <span>Total pagado:</span>
+          <span>{{ formatPrice(orderData.cart.total + (orderData.cart.total > 50 ? 0 : 5.99)) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="next-steps">
+      <h3>¿Qué sigue?</h3>
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-icon">📧</div>
+          <div class="step-text">
+            <h4>Confirmación por email</h4>
+            <p>Recibirás un email con los detalles de tu pedido y el número de seguimiento.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-icon">📦</div>
+          <div class="step-text">
+            <h4>Preparación del pedido</h4>
+            <p>Prepararemos tu pedido en nuestro almacén en las próximas 24-48 horas.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-icon">🚚</div>
+          <div class="step-text">
+            <h4>Envío</h4>
+            <p>Tu pedido será enviado y recibirás información de seguimiento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="success-actions">
+      <button (click)="goToProducts()" class="btn-primary">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
+        </svg>
+        Continuar Comprando
+      </button>
+      <button (click)="goToHome()" class="btn-secondary">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        Ir al Inicio
+      </button>
+    </div>
+  </div>
+</div>
