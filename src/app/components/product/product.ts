@@ -169,8 +169,9 @@ export class Product implements OnInit, OnDestroy {
   }
 
   handleViewProduct(product: ProductInterface): void {
-    console.log('Ver producto:', product);
+    console.log('🚀 Navegando al producto:', product.id, product.title);
     // Aquí implementarías la navegación al detalle del producto
+    this.router.navigate(['/product', product.id]);
   }
 
   // Cambiar modo de vista

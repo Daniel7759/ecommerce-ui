@@ -1,15 +1,15 @@
+<!-- Hero Carousel - Only show on home page -->
+<div *ngIf="isHomePage" class="mb-4">
+    <app-carousel 
+        [slides]="carouselSlides"
+        [autoSlide]="true"
+        [slideInterval]="4000"
+        [showIndicators]="true"
+        [showControls]="true"
+        height="h-64 md:h-80 lg:h-96">
+    </app-carousel>
+</div>
 <div class="container mx-auto p-4">
-    <!-- Hero Carousel - Only show on home page -->
-    <div *ngIf="isHomePage" class="mb-8">
-        <app-carousel 
-            [slides]="carouselSlides"
-            [autoSlide]="true"
-            [slideInterval]="4000"
-            [showIndicators]="true"
-            [showControls]="true"
-            height="h-64 md:h-80 lg:h-96">
-        </app-carousel>
-    </div>
     
     <!-- Header con controles -->
     <div class="flex justify-between items-center mb-6">

@@ -18,6 +18,7 @@ export class CardProduct {
   }
 
   onViewProduct(): void {
+    console.log('🔗 Card-Product: Emitiendo evento viewProduct para:', this.product.id);
     this.viewProduct.emit(this.product);
   }
 

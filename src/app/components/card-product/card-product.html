@@ -1,13 +1,13 @@
 <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
-    <a href="#" (click)="onViewProduct()" class="block">
+    <div (click)="onViewProduct()" class="block cursor-pointer">
         <img class="p-4 rounded-t-lg h-64 w-full object-cover" [src]="product.image" [alt]="product.title" />
-    </a>
+    </div>
     <div class="px-5 pb-5">
-        <a href="#" (click)="onViewProduct()">
+        <div (click)="onViewProduct()" class="cursor-pointer">
             <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2 min-h-[3.5rem]">
                 {{ product.title }}
             </h5>
-        </a>
+        </div>
         
         <!-- Category Badge -->
         <span class="inline-block bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300 mt-2 mb-3 capitalize">

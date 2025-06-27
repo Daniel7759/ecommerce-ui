@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FlowbiteService } from './services/flowbite.service';
 import { Fakestore } from './services/fakestore.service';
@@ -18,7 +18,8 @@ export class App implements OnInit{
 
   constructor(
     private flowbiteService: FlowbiteService,
-    private fakeStoreService: Fakestore
+    private fakeStoreService: Fakestore,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,4 +31,5 @@ export class App implements OnInit{
     console.log('🚀 Iniciando precarga de datos...');
     this.fakeStoreService.preloadCommonData();
   }
+
 }

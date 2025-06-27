@@ -5,7 +5,7 @@
      (mouseleave)="onMouseLeave()">
     
     <!-- Carousel wrapper -->
-    <div class="relative overflow-hidden rounded-lg" [ngClass]="height">
+    <div class="relative overflow-hidden" [ngClass]="height">
         <!-- Dynamic Slides -->
         <div *ngFor="let slide of slides; let i = index" 
              class="duration-700 ease-in-out"
@@ -43,12 +43,13 @@
         <button *ngFor="let slide of slides; let i = index"
                 type="button"
                 class="w-3 h-3 rounded-full transition-all duration-300"
-                [class.bg-gray-400]="i === currentSlideIndex"
+                [class.bg-gray-300]="i === currentSlideIndex"
                 [class.bg-white]="i !== currentSlideIndex"
                 [class.scale-125]="i === currentSlideIndex"
                 [attr.aria-current]="i === currentSlideIndex"
                 [attr.aria-label]="'Slide ' + (i + 1)"
-                (click)="goToSlide(i)"></button>
+                (click)="goToSlide(i)">
+        </button>
     </div>
     
     <!-- Slider controls -->
