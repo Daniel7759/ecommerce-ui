@@ -4,6 +4,8 @@ import { Product } from './components/product/product';
 import { ProductDetail } from './components/product-detail/product-detail';
 import { Login } from './components/login/login';
 import { CartComponent } from './components/cart/cart';
+import { CheckoutComponent } from './components/checkout/checkout';
+import { OrderSuccessComponent } from './components/order-success/order-success';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -18,10 +20,11 @@ export const routes: Routes = [
     { path: 'product/:id', component: ProductDetail },
     { path: 'login', component: Login },
     { path: 'cart', component: CartComponent },
+    { path: 'order-success', component: OrderSuccessComponent },
     // Rutas protegidas que requieren autenticación
     { 
         path: 'checkout', 
-        component: Product, // Cambiar por componente de checkout cuando esté listo
+        component: CheckoutComponent,
         canActivate: [AuthGuard] 
     },
     { path: '**', redirectTo: '' } // Wildcard route - debe ir al final
