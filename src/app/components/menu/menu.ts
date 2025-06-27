@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductCategory } from '../../model';
+import { ProductCategory, User, AuthState } from '../../model';
 import { CommonModule } from '@angular/common';
 import { Fakestore } from '../../services/fakestore.service';
+import { AuthService } from '../../services/auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 interface MenuCategory {
   label: string;
@@ -16,20 +18,42 @@ interface MenuCategory {
   templateUrl: './menu.html',
   styleUrl: './menu.css'
 })
-export class Menu implements OnInit {
+export class Menu implements OnInit, OnDestroy {
 
   menuCategories: MenuCategory[] = [];
+  authState: AuthState = { isAuthenticated: false, user: null, token: null };
+  private destroy$ = new Subject<void>();
+  
   constructor(
     private router: Router,
-    private fakestoreService: Fakestore
+    private fakestoreService: Fakestore,
+    private authService: AuthService
   ) {
     console.log('Menu constructor - Router disponible:', !!this.router);
     console.log('Menu constructor - FakeStore disponible:', !!this.fakestoreService);
   }
 
   ngOnInit(): void {
+    // Suscribirse al estado de autenticación
+    this.authService.authState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(authState => {
+        this.authState = authState;
+        console.log('🔐 Estado de auth actualizado en menu:', authState.isAuthenticated);
+      });
+
+    // Cargar categorías
+    this.initializeCategories();
+  }
+
+  private initializeCategories(): void {
     // Descomenta esta línea si quieres cargar categorías dinámicamente
     this.loadCategoriesFromAPI();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // Método para manejar selección de categoría con navegación
@@ -74,6 +98,35 @@ export class Menu implements OnInit {
         console.error('Error al cargar categorías:', error);
       }
     });
+  }
+
+  /**
+   * Manejar click en login/logout
+   */
+  onAuthClick(): void {
+    if (this.authState.isAuthenticated) {
+      this.logout();
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  /**
+   * Realizar logout
+   */
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
+
+  /**
+   * Obtener nombre de usuario para mostrar
+   */
+  getUserDisplayName(): string {
+    if (this.authState.user) {
+      return `${this.authState.user.name.firstname} ${this.authState.user.name.lastname}`;
+    }
+    return '';
   }
 
 }

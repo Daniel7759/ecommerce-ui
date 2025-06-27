@@ -1,0 +1,61 @@
+/* Menu alignment improvements */
+
+/* Ensure all navigation items have consistent height */
+#navbar-dropdown ul li {
+  display: flex;
+  align-items: center;
+  min-height: 44px; /* Consistent minimum height for touch targets */
+}
+
+/* Mobile menu item alignment */
+@media (max-width: 768px) {
+  #navbar-dropdown ul li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Desktop menu item alignment */
+@media (min-width: 769px) {
+  #navbar-dropdown ul {
+    align-items: center;
+  }
+  
+  #navbar-dropdown ul li {
+    display: flex;
+    align-items: center;
+    height: auto;
+  }
+}
+
+/* Authentication section specific styles */
+.auth-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cart button hover effect */
+.cart-button {
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.cart-button:hover {
+  transform: translateY(-1px);
+}
+
+/* Login button consistency */
+.login-btn {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* User menu actions alignment */
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

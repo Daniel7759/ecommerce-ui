@@ -9,7 +9,8 @@
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
         </svg>
     </button>
-    <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+    <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
+      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-6 rtl:space-x-reverse md:flex-row md:items-center md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
         <li>
           <a (click)="navigateToHome()" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent cursor-pointer">
             Todos los Productos
@@ -40,8 +41,56 @@
         <li>
           <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Pricing</a>
         </li>
+        
+        <!-- Authentication Section -->
         <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
+          <!-- Login Button (when not authenticated) -->
+          <div *ngIf="!authState.isAuthenticated" class="py-2 px-3 md:p-0 auth-section">
+            <button (click)="onAuthClick()" 
+                    class="login-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+              </svg>
+              Iniciar Sesión
+            </button>
+          </div>
+          
+          <!-- User Menu (when authenticated) -->
+          <div *ngIf="authState.isAuthenticated" class="py-2 px-3 md:p-0 md:flex md:items-center md:space-x-3">
+            <!-- User Info -->
+            <div class="hidden lg:block">
+              <span class="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                Hola, <strong>{{ getUserDisplayName() }}</strong>
+              </span>
+            </div>
+            
+            <!-- Mobile User Info -->
+            <div class="block lg:hidden mb-2">
+              <span class="text-sm text-gray-700 dark:text-gray-300">
+                Hola, <strong class="block">{{ getUserDisplayName() }}</strong>
+              </span>
+            </div>
+            
+            <!-- Actions Container -->
+            <div class="user-actions">
+              <!-- Cart Button -->
+              <button class="cart-button relative flex items-center justify-center w-10 h-10 text-gray-600 hover:text-blue-600 transition-all duration-200 rounded-lg hover:bg-gray-100 md:hover:bg-transparent">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h8a1 1 0 001-1v-6m-9 0V9a1 1 0 011-1h6a1 1 0 011 1v4.01"></path>
+                </svg>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+              </button>
+              
+              <!-- Logout Button -->
+              <button (click)="onAuthClick()" 
+                      class="flex items-center text-gray-600 hover:text-red-600 font-medium transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-gray-100 md:hover:bg-transparent md:py-2 md:px-2">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                <span class="hidden sm:inline">Salir</span>
+              </button>
+            </div>
+          </div>
         </li>
       </ul>
     </div>

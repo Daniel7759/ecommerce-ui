@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Product } from '../../model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Fakestore } from '../../services/fakestore.service';
+import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -16,12 +17,14 @@ export class ProductDetail implements OnInit, OnDestroy {
   product: Product | null = null;
   loading: boolean = true;
   error: string | null = null;
+  showLoginModal: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private fakeStore: Fakestore
+    private fakeStore: Fakestore,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -68,6 +71,63 @@ export class ProductDetail implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/']);
+  }
+
+  /**
+   * Verificar si el usuario está autenticado
+   */
+  isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  /**
+   * Agregar producto al carrito
+   */
+  addToCart(): void {
+    if (this.authService.isAuthenticated()) {
+      console.log('🛒 Agregando al carrito:', this.product?.title);
+      // Aquí implementarías la lógica del carrito
+      // Por ahora solo mostramos un mensaje
+      alert('Producto agregado al carrito! (funcionalidad en desarrollo)');
+    } else {
+      console.log('🔐 Usuario no autenticado, mostrando modal...');
+      this.showLoginModal = true;
+    }
+  }
+
+  /**
+   * Comprar ahora
+   */
+  buyNow(): void {
+    if (this.authService.isAuthenticated()) {
+      console.log('💳 Comprando ahora:', this.product?.title);
+      // Aquí implementarías la lógica de checkout
+      // Por ahora solo mostramos un mensaje
+      alert('Redirigiendo a checkout! (funcionalidad en desarrollo)');
+      // this.router.navigate(['/checkout'], { 
+      //   queryParams: { productId: this.product?.id } 
+      // });
+    } else {
+      console.log('🔐 Usuario no autenticado, mostrando modal...');
+      this.showLoginModal = true;
+    }
+  }
+
+  /**
+   * Cerrar el modal de login
+   */
+  closeLoginModal(): void {
+    this.showLoginModal = false;
+  }
+
+  /**
+   * Ir al login desde el modal
+   */
+  goToLogin(): void {
+    this.showLoginModal = false;
+    this.router.navigate(['/login'], { 
+      queryParams: { returnUrl: this.router.url } 
+    });
   }
 
 }
